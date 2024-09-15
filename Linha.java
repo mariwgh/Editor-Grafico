@@ -18,5 +18,5 @@ public class Linha extends Ponto {
                 pontoFinal.getX(), pontoFinal.getY());
     }
 
-    //Crie os getters e setters adequados para a classe Linha.
+    //Crie os getters e setters adequados para a classe Linha
 }
