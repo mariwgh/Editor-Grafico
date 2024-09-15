@@ -15,6 +15,12 @@ public class Editor extends JFrame {
     private JPanel pnlBotoes;                   //controles terão de ser instanciados (criados), e associados a um container como JPanel ( controle que armazena outros controles)
     static private JInternalFrame frame;        //criaremos uma janela-filha vazia.
 
+
+    // MUDANCAS P PODER RODAR (ALEM DE SHOW -> SET VISIBLE):
+    private static final int tamanho_inicial = 100;  // Ou outro valor que faça sentido
+    private static int quantidade_figuras_vetor = 0;
+
+
     static private MeuJPanel pnlDesenho;
     private static Ponto[] figuras = new Ponto[tamanho_inicial];
 
@@ -75,7 +81,7 @@ public class Editor extends JFrame {
         //this indica justamente o objeto JFrame que estamos construindo no momento).
         //metade do formulario
         frame.setSize(this.getWidth() / 2,this.getHeight() / 2);
-        frame.show();
+        frame.setVisible(true);         // Mostra a janela interna  //frame.show();
 
         //para nao ser transparente
         frame.setOpaque(true);
@@ -87,7 +93,7 @@ public class Editor extends JFrame {
 
 
         setSize(700,500);       // dimensões do formulário em pixels
-        show();                             // exibe o formulário
+        setVisible(true);                   // show();   // exibe o formulário
     }
 
     public static void main(String[] args) {
