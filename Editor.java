@@ -1,7 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
-//JFrame está disponível no pacote javax.swing,
-import javax.swing.*;
+import javax.swing.*;       //JFrame está disponível no pacote javax.swing,
+
+import java.io.*;
 
 // Para criar formulários em Java, devemos criar uma classe que seja herança da classe JFrame. JFrame é um container para
 //componentes visuais de interface com o usuário.
@@ -15,14 +16,22 @@ public class Editor extends JFrame {
     private JPanel pnlBotoes;                   //controles terão de ser instanciados (criados), e associados a um container como JPanel ( controle que armazena outros controles)
     static private JInternalFrame frame;        //criaremos uma janela-filha vazia.
 
+    private static Ponto[] figuras = new Ponto[tamanho_inicial];
+    static private MeuJPanel pnlDesenho;
 
     // MUDANCAS P PODER RODAR (ALEM DE SHOW -> SET VISIBLE):
     private static final int tamanho_inicial = 100;  // Ou outro valor que faça sentido
-    private static int quantidade_figuras_vetor = 0;
+    static int quantidade_figuras_vetor;
 
+    private static File arquivo;
+    private static ListaSimples figuras = new ListaSimples();
 
-    static private MeuJPanel pnlDesenho;
-    private static Ponto[] figuras = new Ponto[tamanho_inicial];
+    private JLabel statusBar1, statusBar2;
+    static boolean esperaPonto, esperaInicioReta, esperaFimReta;
+
+    static private Color corAtual = Color.black;
+    private static Ponto p1 = new Ponto();
+
 
     public Editor() {
         // construtor de Editor que criará o JFrame, colocará seu título,
@@ -57,8 +66,13 @@ public class Editor extends JFrame {
         btnAbrir.addActionListener(new FazAbertura());
 
         pnlBotoes.add(btnSalvar);
+
         pnlBotoes.add(btnPonto);
+        btnPonto.addActionListener(new DesenhaPonto());
+
         pnlBotoes.add(btnLinha);
+        btnLinha.addActionListener(new DesenhaReta());
+
         pnlBotoes.add(btnCirculo);
         pnlBotoes.add(btnElipse);
         pnlBotoes.add(btnCor);
@@ -124,7 +138,7 @@ public class Editor extends JFrame {
             //código de verificação se um arquivo foi selecionado e obter seu nome
             if (result == JFileChooser.APPROVE_OPTION) {
                 File arquivo = arqEscolhido.getSelectedFile();
-                System.out.println("Processando "+arquivo.getName());
+                System.out.println("Processando " + arquivo.getName());
             }
 
             try {
@@ -193,7 +207,70 @@ public class Editor extends JFrame {
     }
 
 
-    private class MeuJPanel extends JPanel {
+    private class MeuJPanel extends JPanel implements MouseMotionListener, MouseListener {
+
+        JPanel pnlStatus = new JPanel();        //→ barra de status
+
+        public MeuJPanel() {
+            super();
+            pnlStatus.setLayout(new GridLayout(1,2));   //→ painel com 2 colunas
+            statusBar1 = new JLabel("Mensagem");
+            statusBar2 = new JLabel("Coordenada");
+            pnlStatus.add(statusBar1);  //→ label na coluna da esquerda
+            pnlStatus.add(statusBar2);  //→ label na coluna da direita
+            getContentPane().add(pnlStatus,BorderLayout.SOUTH);     //→ status no fundo do formulário
+
+            addMouseListener(this);         //→ esta classe “ouve” mouse
+            addMouseMotionListener(this);   //→ e “ouve” também seus movimentos
+        }
+
+        public void mouseMoved(MouseEvent e) {
+            statusBar2.setText("Coordenada: "+e.getX()+","+e.getY());
+        }
+        public void mouseDragged(MouseEvent e) {
+            // não faz nada por enquanto
+        }
+        public void mouseClicked (MouseEvent e) {
+            statusBar1.setText("Mensagem:");
+        }
+        public void mousePressed (MouseEvent e) {
+            if (esperaPonto) {
+                Ponto novoPonto = new Ponto(e.getX(), e.getY(), corAtual);
+                figuras.insereAposFim(new ListaSimples.NoLista(novoPonto, null));
+                novoPonto.desenhar(novoPonto.getCor(), pnlDesenho.getGraphics());
+                esperaPonto = false;
+            }
+
+            else if (esperaInicioReta) {
+                p1.setCor(corAtual);
+                p1.setX(e.getX());
+                p1.setY(e.getY());
+                esperaInicioReta = false;
+                esperaFimReta = true;
+                statusBar1.setText("Mensagem: clique o ponto final da reta");
+            }
+
+            else if (esperaFimReta) {
+                esperaInicioReta = false;
+                esperaFimReta = false;
+                Linha novaLinha = new Linha(p1.getX(), p1.getY(),
+
+                        e.getX(), e.getY(), corAtual);
+                figuras.InsereAposFim(new ListaSimples.NoLista(novaLinha, null));
+                novaLinha.desenhar(novaLinha.getCor(), pnlDesenho.getGraphics());
+            }
+        }
+
+        public void mouseEntered (MouseEvent e) {
+            // não faz nada por enquanto
+        }
+        public void mouseExited (MouseEvent e) {
+            // não faz nada por enquanto
+        }
+        public void mouseReleased (MouseEvent e) {
+            // não faz nada por enquanto
+        }
+
         public void paintComponent(Graphics g) {
             for (int atual = 0; atual < quantidade_figuras_vetor; atual++) {
                 Ponto figuraAtual = (Ponto) figuras[atual];
@@ -209,4 +286,26 @@ public class Editor extends JFrame {
         // de círculo, será chamado o método desenhar() de Circulo.
     }
 
+
+    private class DesenhaPonto implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            statusBar1.setText("Mensagem: clique o local do ponto desejado:");
+            limpaEsperas();
+            esperaPonto = true;
+        }
+
+        private void limpaEsperas() {
+            esperaPonto = false;
+            esperaInicioReta = false;
+            esperaFimReta = false;
+        }
+    }
+
+    private class DesenhaReta implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            statusBar1.setText("Mensagem: clique o ponto inicial da reta");
+            limpaEsperas();
+            esperaInicioReta = true;
+        }
+    }
 }
