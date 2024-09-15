@@ -58,4 +58,25 @@ public class Ponto {
         //assim, para desenharmos um único ponto é preciso desenhar uma linha reta que comece e termine na mesma coordenada.
         //getX() e getY() são os valores dos campos X e Y do TPonto que estamos desenhando.
     }
+
+    public String transformaString(String valor, int quantasPosicoes) {
+        String cadeia = new String(valor + " ");
+
+        while (cadeia.length() < quantasPosicoes)
+            cadeia = cadeia + " ";
+
+        return cadeia.substring(0,quantasPosicoes); // corta, se necessário, para tamanho máximo
+    }
+
+    public String toString() {
+        return transformaString("p",5) +
+
+                transformaString(Integer.toString(getX()), 5) +
+                transformaString(Integer.toString(getY()), 5) +
+
+                transformaString(Integer.toString(getCor().getRed()),5) +
+                transformaString(Integer.toString(getCor().getGreen()),5) +
+                transformaString(Integer.toString(getCor().getBlue()),5);
+    }
+
 }

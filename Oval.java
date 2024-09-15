@@ -5,8 +5,8 @@ public class Oval extends Ponto {
 
     public void desenha(Color corDesenho, Graphics g) {
         g.setColor(corDesenho);
-        g.drawOval(getX()-raioA, getY()-raioB, // centro - raio
-                2*raioA,2*raioB); // centro + raio
+        g.drawOval(getX() - raioA, getY() - raioB, // centro - raio
+                2 * raioA,2 * raioB); // centro + raio
     }
 
     public Oval() {
@@ -28,6 +28,21 @@ public class Oval extends Ponto {
         super(xCentro, yCentro, novaCor); // construtor de Ponto(x,y)
         setRaioA(novoRaioA);
         setRaioB(novoRaioB);
+    }
+
+
+    public String toString() {
+        return transformaString("l",5) +
+
+                transformaString(Integer.toString(getX()), 5) +
+                transformaString(Integer.toString(getY()), 5) +
+
+                transformaString(Integer.toString(raioA), 5) +
+                transformaString(Integer.toString(raioB), 5) +
+
+                transformaString(Integer.toString(getCor().getRed()),5) +
+                transformaString(Integer.toString(getCor().getGreen()),5) +
+                transformaString(Integer.toString(getCor().getBlue()),5);
     }
 
 }

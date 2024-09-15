@@ -56,4 +56,20 @@ public class Linha extends Ponto {
     public Color getCor() {
         return super.getCor();
     }
+
+
+    public String toString() {
+        return transformaString("l",5) +
+
+                transformaString(Integer.toString(getX()), 5) +
+                transformaString(Integer.toString(getY()), 5) +
+
+                transformaString(Integer.toString(pontoFinal.getX()), 5) +
+                transformaString(Integer.toString(pontoFinal.getY()), 5) +
+
+                transformaString(Integer.toString(getCor().getRed()),5) +
+                transformaString(Integer.toString(getCor().getGreen()),5) +
+                transformaString(Integer.toString(getCor().getBlue()),5);
+    }
+
 }

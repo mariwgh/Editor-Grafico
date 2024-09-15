@@ -54,6 +54,8 @@ public class Editor extends JFrame {
 
         // adiciona os controles visuais (botões) ao painel de botões, de cima para baixo, da esquerda para direita.
         pnlBotoes.add(btnAbrir);
+        btnAbrir.addActionListener(new FazAbertura());
+
         pnlBotoes.add(btnSalvar);
         pnlBotoes.add(btnPonto);
         pnlBotoes.add(btnLinha);
@@ -96,8 +98,98 @@ public class Editor extends JFrame {
         setVisible(true);                   // show();   // exibe o formulário
     }
 
+    public static void desenharObjetos (Graphics g) {
+        pnlDesenho.paintComponent(g);
+    }
+
+
     public static void main(String[] args) {
         Editor aplicacao = new Editor();    //objeto que representa a aplicação;
+
+        aplicacao.addWindowListener (
+                new WindowAdapter () {      // cria instância da interface
+                    public void windowClosing(WindowEvent e) {
+                        System.exit(0);
+                    }
+                }
+        );
+    }
+
+
+    private class FazAbertura implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser arqEscolhido = new JFileChooser ();
+            arqEscolhido.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int result = arqEscolhido.showOpenDialog(Editor.this);
+            //código de verificação se um arquivo foi selecionado e obter seu nome
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File arquivo = arqEscolhido.getSelectedFile();
+                System.out.println("Processando "+arquivo.getName());
+            }
+
+            try {
+                BufferedReader arqFiguras = new BufferedReader( new FileReader (arquivo.getName()) );
+
+                try {
+                    String linha = arqFiguras.readLine();
+                    while (linha != null) {
+                        String tipo = linha.substring(0,5).trim();
+                        int xBase = Integer.parseInt(linha.substring(5,10).trim());
+                        int yBase = Integer.parseInt(linha.substring(10,15).trim());
+                        int corR = Integer.parseInt(linha.substring(15,20).trim());
+                        int corG = Integer.parseInt(linha.substring(20,25).trim());
+                        int corB = Integer.parseInt(linha.substring(25,30).trim());
+                        Color cor = new Color(corR, corG, corB);
+
+                        switch (tipo.charAt(0)) {
+                            case 'p' : // figura é um ponto
+                                figuras.insereAposFim(new ListaSimples.NoLista(
+
+                                        new Ponto(xBase, yBase, cor), null)
+                                );
+                                break;
+
+                            case 'l' : // figura é uma linha
+                                int xFinal =Integer.parseInt(linha.substring(30,35).trim());
+                                int yFinal =Integer.parseInt(linha.substring(35,40).trim());
+                                figuras.insereAposFim(new ListaSimples.NoLista(
+                                        new Linha(xBase, yBase, xFinal, yFinal, cor), null)
+                                );
+                                break;
+
+                            case 'c' : // figura é um círculo
+                                int raio =Integer.parseInt(linha.substring(30,35).trim());
+                                figuras.insereAposFim(new ListaSimples.NoLista(
+                                        new Circulo(xBase, yBase, raio, cor), null)
+                                );
+                                break;
+
+                            case 'o' : // figura é uma oval
+                                int raioA =Integer.parseInt(linha.substring(30,35).trim());
+                                int raioB =Integer.parseInt(linha.substring(35,40).trim());
+                                figuras.insereAposFim(new ListaSimples.NoLista(
+                                        new Oval(xBase, yBase, raioA, raioB, cor), null)
+                                );
+                                break;
+                        }
+
+                        linha = arqFiguras.readLine();
+                    }
+
+                    arqFiguras.close();
+                    frame.setTitle(arquivo.getName());
+                    desenharObjetos(pnlDesenho.getGraphics());
+                }
+
+                catch (IOException ioe){
+                    System.out.println("Erro de leitura no arquivo");
+                }
+            }
+
+            catch (FileNotFoundException e) {
+                System.out.println("Arquivo não pôde ser aberto");
+            }
+        }
     }
 
 
