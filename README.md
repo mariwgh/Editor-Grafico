@@ -100,7 +100,8 @@ ser selecionadas).
   - Passo 1: Abra o IntelliJ e selecione Get from VCS para abrir o repositório do projeto (selecione por Github).
   - Passo 2: Certifique de selecionar pelo GitHub e que o directory esteja em um local seguro (caso o Intellij não o reconheça como, digite no terminal (View > Tool Windows > Terminal): git config --global --add safe.directory <caminho_do_projeto>
   - Passo 3: Faça as mudanças necessárias e de commit selecionando os arquivos, não esqueça de dar push também. (Logo, os arquivos irão aparecer para todos os colaboradores no projeto no GitHub.)
-  - Passo 4: Para executar o projeto, apenas clique no botão de play.
+  - Passo 4: Caso peça para fazer login no Git, coloque seu nome e o e-mail da Unicamp.
+  - Passo 5: Para executar o projeto, apenas clique no botão de play.
 
 ## Links Úteis
 
