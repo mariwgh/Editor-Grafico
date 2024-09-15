@@ -21,6 +21,6 @@ public class Circulo extends Ponto {
     public void desenha(Color corDesenho, Graphics g) {
         g.setColor(corDesenho);
         g.drawOval(getX()-raio, getY()-raio, // centro - raio
-                2*raio,2*raio); // centro + raio
+                2*raio,2*raio);             // centro + raio
     }
 }
