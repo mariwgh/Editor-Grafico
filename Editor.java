@@ -102,6 +102,7 @@ public class Editor extends JFrame {
                 figuraAtual.desenhar(figuraAtual.getCor(), g);
             }
         }
+
         //Observe o uso do método desenhar() de cada elemento recuperado do vetor. Cada figura é obtida
         //da posição do vetor atualmente acessada e tratado como um objeto da classe ancestral Ponto,
         //que funciona como uma classe unificadora de todas as classes dela derivadas.

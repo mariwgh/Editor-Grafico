@@ -10,7 +10,7 @@ public class Oval extends Ponto {
     }
 
     public Oval() {
-        super(0, 0, Color.black);  // Chama o construtor de Ponto com valores padrão
+        super(0, 0, Color.black);   // Chama o construtor de Ponto com valores padrão
         setRaioA(0);
         setRaioB(0);
         setCor(Color.black);

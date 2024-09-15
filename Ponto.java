@@ -21,7 +21,7 @@ public class Ponto {
         //Quando criamos um objeto da classe Ponto, precisamos colocar os valores de x, y e cor nos campos desse objeto.
         x = cX;
         y = cY;
-        cor = qualCor;      // cor = Color.qualCor;
+        cor = qualCor;          // cor = Color.qualCor;
     }
 
     // Abaixo temos os getters e setters da classe Ponto:

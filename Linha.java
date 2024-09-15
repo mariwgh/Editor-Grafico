@@ -39,7 +39,7 @@ public class Linha extends Ponto {
     // Setter para a cor da linha
     public void setCor(Color novaCor) {
         super.setCor(novaCor);
-        pontoFinal.setCor(novaCor); // Mantém a cor da linha consistente nos dois pontos
+        pontoFinal.setCor(novaCor);     // Mantém a cor da linha consistente nos dois pontos
     }
 
     // Getter para o ponto inicial (herda de Ponto)

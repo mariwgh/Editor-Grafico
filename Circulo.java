@@ -6,7 +6,7 @@ public class Circulo extends Ponto {
     Color cor;
 
     public Circulo(int xCentro, int yCentro, int novoRaio, Color novaCor) {
-        super(xCentro, yCentro, novaCor); // construtor de Ponto(x,y)
+        super(xCentro, yCentro, novaCor);   // construtor de Ponto(x,y)
         setRaio(novoRaio);
     }
 
