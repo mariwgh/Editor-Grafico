@@ -16,15 +16,16 @@ public class Editor extends JFrame {
     private JPanel pnlBotoes;                   //controles terão de ser instanciados (criados), e associados a um container como JPanel ( controle que armazena outros controles)
     static private JInternalFrame frame;        //criaremos uma janela-filha vazia.
 
+    private static int tamanho_inicial = 100;  // Ou outro valor que faça sentido
     private static Ponto[] figuras = new Ponto[tamanho_inicial];
+
     static private MeuJPanel pnlDesenho;
 
     // MUDANCAS P PODER RODAR (ALEM DE SHOW -> SET VISIBLE):
-    private static final int tamanho_inicial = 100;  // Ou outro valor que faça sentido
-    static int quantidade_figuras_vetor;
+    static int qntsFiguras;
 
     private static File arquivo;
-    private static ListaSimples figuras = new ListaSimples();
+    //private static ListaSimples figuras = new ListaSimples();
 
     private JLabel statusBar1, statusBar2;
     static boolean esperaPonto, esperaInicioReta, esperaFimReta;
@@ -41,7 +42,7 @@ public class Editor extends JFrame {
 
         // cria os botões do editor
         Icon imgAbrir = new ImageIcon("D:/PROJETO II/imagens/abrir.jpg");         //criamos um objeto da classe Icon, usando o seu construtor que
-                                                            //recebe o nome de um arquivo de imagem como parâmetro.
+        //recebe o nome de um arquivo de imagem como parâmetro.
         //criamos cada botão e passamos o ícone como parâmetro, além do título que desejamos para o botão:
         btnAbrir = new JButton("Abrir", imgAbrir);
         btnSalvar = new JButton("Salvar", new ImageIcon("D:/PROJETO II/imagens/salvar.jpg"));
@@ -79,13 +80,12 @@ public class Editor extends JFrame {
         pnlBotoes.add(btnApagar);
         pnlBotoes.add(btnSair);
 
-        setSize(700,500);   // dimensões do formulário em pixels
+        setSize(700, 500);   // dimensões do formulário em pixels
         setVisible(true);               // exibe o formulário
 
         Container cntForm = getContentPane();       // acessa o painel de conteúdo do frame
         cntForm.setLayout(new BorderLayout());
-        cntForm.add(pnlBotoes , BorderLayout.NORTH);
-
+        cntForm.add(pnlBotoes, BorderLayout.NORTH);
 
         JDesktopPane panDesenho = new JDesktopPane();
         cntForm.add(panDesenho);
@@ -96,148 +96,79 @@ public class Editor extends JFrame {
 
         //this indica justamente o objeto JFrame que estamos construindo no momento).
         //metade do formulario
-        frame.setSize(this.getWidth() / 2,this.getHeight() / 2);
+        frame.setSize(this.getWidth() / 2, this.getHeight() / 2);
         frame.setVisible(true);         // Mostra a janela interna  //frame.show();
 
         //para nao ser transparente
         frame.setOpaque(true);
 
-
         pnlDesenho = new MeuJPanel();                   //instanciar o painel de desenhos,
         Container cntFrame = frame.getContentPane();    // criar container dentro da janela-filha frame,
         cntFrame.add(pnlDesenho);                       // associar o painel a esse container.
 
-
-        setSize(700,500);       // dimensões do formulário em pixels
-        setVisible(true);                   // show();   // exibe o formulário
+        //setSize(700,500);       // dimensões do formulário em pixels
+        //setVisible(true);                   // show();   // exibe o formulário
     }
 
-    public static void desenharObjetos (Graphics g) {
+    public static void desenharObjetos(Graphics g) {
         pnlDesenho.paintComponent(g);
+        //pnlDesenho.paintComponent(pnlDesenho.getGraphics());
     }
-
 
     public static void main(String[] args) {
         Editor aplicacao = new Editor();    //objeto que representa a aplicação;
 
-        aplicacao.addWindowListener (
-                new WindowAdapter () {      // cria instância da interface
-                    public void windowClosing(WindowEvent e) {
-                        System.exit(0);
-                    }
-                }
-        );
-    }
-
-
-    private class FazAbertura implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            JFileChooser arqEscolhido = new JFileChooser ();
-            arqEscolhido.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            int result = arqEscolhido.showOpenDialog(Editor.this);
-            //código de verificação se um arquivo foi selecionado e obter seu nome
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File arquivo = arqEscolhido.getSelectedFile();
-                System.out.println("Processando " + arquivo.getName());
+        aplicacao.addWindowListener(new WindowAdapter() {      // cria instância da interface
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
             }
-
-            try {
-                BufferedReader arqFiguras = new BufferedReader( new FileReader (arquivo.getName()) );
-
-                try {
-                    String linha = arqFiguras.readLine();
-                    while (linha != null) {
-                        String tipo = linha.substring(0,5).trim();
-                        int xBase = Integer.parseInt(linha.substring(5,10).trim());
-                        int yBase = Integer.parseInt(linha.substring(10,15).trim());
-                        int corR = Integer.parseInt(linha.substring(15,20).trim());
-                        int corG = Integer.parseInt(linha.substring(20,25).trim());
-                        int corB = Integer.parseInt(linha.substring(25,30).trim());
-                        Color cor = new Color(corR, corG, corB);
-
-                        switch (tipo.charAt(0)) {
-                            case 'p' : // figura é um ponto
-                                figuras.insereAposFim(new ListaSimples.NoLista(
-
-                                        new Ponto(xBase, yBase, cor), null)
-                                );
-                                break;
-
-                            case 'l' : // figura é uma linha
-                                int xFinal =Integer.parseInt(linha.substring(30,35).trim());
-                                int yFinal =Integer.parseInt(linha.substring(35,40).trim());
-                                figuras.insereAposFim(new ListaSimples.NoLista(
-                                        new Linha(xBase, yBase, xFinal, yFinal, cor), null)
-                                );
-                                break;
-
-                            case 'c' : // figura é um círculo
-                                int raio =Integer.parseInt(linha.substring(30,35).trim());
-                                figuras.insereAposFim(new ListaSimples.NoLista(
-                                        new Circulo(xBase, yBase, raio, cor), null)
-                                );
-                                break;
-
-                            case 'o' : // figura é uma oval
-                                int raioA =Integer.parseInt(linha.substring(30,35).trim());
-                                int raioB =Integer.parseInt(linha.substring(35,40).trim());
-                                figuras.insereAposFim(new ListaSimples.NoLista(
-                                        new Oval(xBase, yBase, raioA, raioB, cor), null)
-                                );
-                                break;
-                        }
-
-                        linha = arqFiguras.readLine();
-                    }
-
-                    arqFiguras.close();
-                    frame.setTitle(arquivo.getName());
-                    desenharObjetos(pnlDesenho.getGraphics());
-                }
-
-                catch (IOException ioe){
-                    System.out.println("Erro de leitura no arquivo");
-                }
-            }
-
-            catch (FileNotFoundException e) {
-                System.out.println("Arquivo não pôde ser aberto");
-            }
-        }
+        });
     }
 
 
     private class MeuJPanel extends JPanel implements MouseMotionListener, MouseListener {
-
         JPanel pnlStatus = new JPanel();        //→ barra de status
 
         public MeuJPanel() {
             super();
-            pnlStatus.setLayout(new GridLayout(1,2));   //→ painel com 2 colunas
+            pnlStatus.setLayout(new GridLayout(1, 2));   //→ painel com 2 colunas
             statusBar1 = new JLabel("Mensagem");
             statusBar2 = new JLabel("Coordenada");
             pnlStatus.add(statusBar1);  //→ label na coluna da esquerda
             pnlStatus.add(statusBar2);  //→ label na coluna da direita
-            getContentPane().add(pnlStatus,BorderLayout.SOUTH);     //→ status no fundo do formulário
+            getContentPane().add(pnlStatus, BorderLayout.SOUTH);     //→ status no fundo do formulário
 
             addMouseListener(this);         //→ esta classe “ouve” mouse
             addMouseMotionListener(this);   //→ e “ouve” também seus movimentos
         }
 
         public void mouseMoved(MouseEvent e) {
-            statusBar2.setText("Coordenada: "+e.getX()+","+e.getY());
+
+            statusBar2.setText("Coordenada: " + e.getX() + "," + e.getY());
         }
+
         public void mouseDragged(MouseEvent e) {
             // não faz nada por enquanto
         }
-        public void mouseClicked (MouseEvent e) {
+
+        public void mouseClicked(MouseEvent e) {
+
             statusBar1.setText("Mensagem:");
         }
-        public void mousePressed (MouseEvent e) {
+
+        public void mousePressed(MouseEvent e) {
             if (esperaPonto) {
                 Ponto novoPonto = new Ponto(e.getX(), e.getY(), corAtual);
+                //figuras [qntsFiguras] = new Ponto(e.getX(), e.getY(), corAtual);
+
+                //Ponto novoPonto = figuras [qntsFiguras];
+
                 figuras.insereAposFim(new ListaSimples.NoLista(novoPonto, null));
+
                 novoPonto.desenhar(novoPonto.getCor(), pnlDesenho.getGraphics());
+
+                //qntsFiguras++;
+
                 esperaPonto = false;
             }
 
@@ -253,27 +184,32 @@ public class Editor extends JFrame {
             else if (esperaFimReta) {
                 esperaInicioReta = false;
                 esperaFimReta = false;
-                Linha novaLinha = new Linha(p1.getX(), p1.getY(),
 
-                        e.getX(), e.getY(), corAtual);
+                Linha novaLinha = new Linha(p1.getX(), p1.getY(), e.getX(), e.getY(), corAtual);
+
                 figuras.InsereAposFim(new ListaSimples.NoLista(novaLinha, null));
+
                 novaLinha.desenhar(novaLinha.getCor(), pnlDesenho.getGraphics());
+
+                qntsFiguras++;
             }
         }
 
-        public void mouseEntered (MouseEvent e) {
+        public void mouseEntered(MouseEvent e) {
             // não faz nada por enquanto
         }
-        public void mouseExited (MouseEvent e) {
+
+        public void mouseExited(MouseEvent e) {
             // não faz nada por enquanto
         }
-        public void mouseReleased (MouseEvent e) {
+
+        public void mouseReleased(MouseEvent e) {
             // não faz nada por enquanto
         }
 
         public void paintComponent(Graphics g) {
-            for (int atual = 0; atual < quantidade_figuras_vetor; atual++) {
-                Ponto figuraAtual = (Ponto) figuras[atual];
+            for (int atual = 0; atual < qntsFiguras; atual++) {
+                Ponto figuraAtual = figuras[atual];
                 figuraAtual.desenhar(figuraAtual.getCor(), g);
             }
         }
@@ -287,19 +223,97 @@ public class Editor extends JFrame {
     }
 
 
+    private class FazAbertura implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser arqEscolhido = new JFileChooser();
+
+            arqEscolhido.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+            int result = arqEscolhido.showOpenDialog(Editor.this);
+
+            //código de verificação se um arquivo foi selecionado e obter seu nome
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File arquivo = arqEscolhido.getSelectedFile();
+                System.out.println("Processando " + arquivo.getName());
+
+                try {
+                    BufferedReader arqFiguras = new BufferedReader(new FileReader(arquivo.getName()));
+
+                    try {
+                        //qntsFiguras = 0;
+                        String linha = arqFiguras.readLine();
+
+                        while (linha != null) {
+                            String tipo = linha.substring(0, 5).trim();
+
+                            int xBase = Integer.parseInt(linha.substring(5, 10).trim());
+                            int yBase = Integer.parseInt(linha.substring(10, 15).trim());
+                            int corR = Integer.parseInt(linha.substring(15, 20).trim());
+                            int corG = Integer.parseInt(linha.substring(20, 25).trim());
+                            int corB = Integer.parseInt(linha.substring(25, 30).trim());
+
+                            Color cor = new Color(corR, corG, corB);
+
+                            switch (tipo.charAt(0)) {
+                                case 'p':      // figura é um ponto
+                                    figuras.insereAposFim(new ListaSimples.NoLista(new Ponto(xBase, yBase, cor), null));
+
+                                    break;
+
+                                case 'l':      // figura é uma linha
+                                    int xFinal = Integer.parseInt(linha.substring(30, 35).trim());
+                                    int yFinal = Integer.parseInt(linha.substring(35, 40).trim());
+                                    figuras.insereAposFim(new ListaSimples.NoLista(new Linha(xBase, yBase, xFinal, yFinal, cor), null));
+
+                                    break;
+
+                                case 'c':      // figura é um círculo
+                                    int raio = Integer.parseInt(linha.substring(30, 35).trim());
+                                    figuras.insereAposFim(new ListaSimples.NoLista(new Circulo(xBase, yBase, raio, cor), null));
+
+                                    break;
+
+                                case 'o':      // figura é uma oval
+                                    int raioA = Integer.parseInt(linha.substring(30, 35).trim());
+                                    int raioB = Integer.parseInt(linha.substring(35, 40).trim());
+                                    figuras.insereAposFim(new ListaSimples.NoLista(new Oval(xBase, yBase, raioA, raioB, cor), null));
+
+                                    break;
+                            }
+
+                            //qntsFiguras++;
+                            linha = arqFiguras.readLine();
+                        }
+
+                        arqFiguras.close();
+                        frame.setTitle(arquivo.getName());
+                        desenharObjetos(pnlDesenho.getGraphics());
+                    } catch (IOException ioe) {
+                        System.out.println("Erro de leitura no arquivo");
+                    }
+                } catch (FileNotFoundException ex) {
+                    System.out.println("Arquivo não pôde ser aberto");
+                }
+            }
+        }
+    }
+
+
+    private void limpaEsperas() {
+        esperaPonto = false;
+        esperaInicioReta = false;
+        esperaFimReta = false;
+    }
+
+
     private class DesenhaPonto implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             statusBar1.setText("Mensagem: clique o local do ponto desejado:");
             limpaEsperas();
             esperaPonto = true;
         }
-
-        private void limpaEsperas() {
-            esperaPonto = false;
-            esperaInicioReta = false;
-            esperaFimReta = false;
-        }
     }
+
 
     private class DesenhaReta implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -308,4 +322,5 @@ public class Editor extends JFrame {
             esperaInicioReta = true;
         }
     }
+
 }
