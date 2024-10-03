@@ -24,7 +24,7 @@ coordenadas e medidas no plano bidimensional, com parâmetros geométricos de po
 ## Detalhes
 
 - Início: 14/09/2024
-- Término: 30/09/2024 (no classroom)
+- Término: 03/12/2024 (no classroom)
   
 ## Autores
 
