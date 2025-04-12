@@ -1,4 +1,4 @@
-# Projeto II - Editor Gráfico em Java
+# Projeto II - Editor Gráfico em Java (não foi finalizado)
 
 Para criarmos um programa de desenho geométrico, precisamos criar classes que representem
 as diversas figuras geométricas, como ponto, reta, circulo, elipse, dentre outras.
